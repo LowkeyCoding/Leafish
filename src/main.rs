@@ -522,7 +522,7 @@ fn tick_all(
         game.focused = false;
     } else {
         window
-            .set_cursor_grab(winit::window::CursorGrabMode::Locked)
+            .set_cursor_grab(get_locked_mode())
             .unwrap();
         window.set_cursor_visible(false);
         game.focused = true;
@@ -600,7 +600,7 @@ fn handle_window_event<T>(
 
             if game.focused {
                 window
-                    .set_cursor_grab(winit::window::CursorGrabMode::Locked)
+                    .set_cursor_grab(get_locked_mode())
                     .unwrap();
                 window.set_cursor_visible(false);
                 if game.server.is_some()
@@ -784,4 +784,16 @@ fn create_clipboard() -> Box<dyn ClipboardProvider> {
             )
         }
     }
+}
+
+
+
+#[cfg(target_os = "windows")]
+fn get_locked_mode() -> winit::window::CursorGrabMode {
+    winit::window::CursorGrabMode::Confined
+}
+#[cfg(not(target_os = "windows"))]
+
+fn get_locked_mode() -> winit::window::CursorGrabMode {
+    winit::window::CursorGrabMode::Locked
 }
